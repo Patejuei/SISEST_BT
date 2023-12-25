@@ -1,4 +1,5 @@
 from lib.Models.connection import Conexion
+from lib.Models import Filter
 import datetime
 
 class Voluntario:
@@ -12,14 +13,13 @@ class Voluntario:
     Sub_Estado : str
     rut : int
     dv : str
-    def __init__(self, rGeneral, rCia, nombre, apellidoP, apellidoM, eMail, fIngreso, Sub_Estado):
+    def __init__(self, rGeneral, rCia, nombre, apellidoP, apellidoM, eMail, Sub_Estado):
         self.rGeneral = rGeneral
         self.rCia = rCia
         self.nombre = nombre
         self.apellidoP = apellidoP
         self.apellidoM = apellidoM
         self.eMail = eMail
-        self.fIngreso = Conexion.Filter_Date(fIngreso)
         self.Sub_Estado = Sub_Estado
 
     def set_fullRut(self, rut):

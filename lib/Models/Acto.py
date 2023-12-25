@@ -37,7 +37,8 @@ class Acto:
         database = Conexion()
         query = "INSERT INTO actos VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         database.cursor.execute(query, (self.company_cor, self.act_type, self.general_cor, self.date, self.address, self.lista, self.qty_vols, self.carros))
-        database.cursor.executemany("INSERT INTO asistencia (corr_cia_acto, reg_gral_voluntario) VALUES ( %s, %s)", self.get_Vols())
+        for item in self.get_Vols():
+            database.cursor.execute("INSERT INTO asistencia (corr_cia_acto, reg_gral_voluntario) VALUES (%s, %s)", item)
         database.connection.commit()
         database.connection.close()
 
@@ -47,6 +48,6 @@ class Acto:
         database.cursor.execute(
             'UPDATE actos SET acto=%s, corr_gral=%s, fecha=%s , direccion=%s, lista=%s, c_vols=%s, unidad=%s WHERE corr_cia = %s', act_data)
         database.cursor.execute(f'DELETE FROM asistencia WHERE corr_cia_acto = "{act_data[-1]}"')
-        database.cursor.executemany('INSERT INTO asistencia VALUES (default, %s, %s)', self.get_Vols())
+        database.cursor.executemany('INSERT INTO asistencia VALUES (%s, %s)', self.get_Vols())
         database.connection.commit()
         database.connection.close()

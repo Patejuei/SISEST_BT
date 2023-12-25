@@ -56,41 +56,43 @@ class Conexion:
 
 
     def addVolLista(self, vol):
-        
+        self.connection.connect()
         self.cursor.execute(f'SELECT reg_gral, nombre, apellidoP, apellidoM FROM bomberos WHERE reg_gral = "{vol}"')
         result = self.cursor.fetchall()[0]
+        self.connection.close()
         
         return result
 
 
     def getYear(self):
-        
+        self.connection.connect()
         years = [""]
         self.cursor.execute("SELECT YEAR(fecha) FROM actos GROUP BY year(fecha)")
         for ye in self.cursor.fetchall():
             years.append(str(ye[0]))
-        
+        self.connection.close()
         return years
 
     def getActos(self):
+        self.connection.connect()
         self.cursor.execute('SELECT corr_cia, acto, corr_gral, fecha, direccion, lista, unidad FROM actos ORDER BY fecha DESC, corr_cia DESC')
         result = self.cursor.fetchall()
         self.connection.close()
         return result
 
     def delLista(self, cCia):
-        
+        self.connection.connect()
         self.cursor.execute(f'DELETE FROM asistencia WHERE corr_cia_acto = "{cCia}"')
         self.cursor.execute(f'DELETE FROM actos WHERE corr_cia = "{cCia}"')
         self.connection.commit()
         self.connection.close()
         
 
-    def getVols(self, rGral):
-        
-        self.cursor.execute(f'SELECT * FROM bomberos WHERE reg_gral = "{rGral}"')
-        result = self.cursor.fetchall()[0]
-        
+    def getVols(self):
+        self.connection.connect()
+        self.cursor.execute(f'SELECT * FROM bomberos')
+        result = self.cursor.fetchall()
+        self.connection.close()
         return result
 
     #TODO: Pasar a Informes
@@ -141,13 +143,13 @@ class Conexion:
         return asistencia, actos
 
     def getVolsInfoPers(self):
-        
+        self.connection.connect()
         vols = []
         self.cursor.execute("SELECT reg_gral, nombre, apellidoP, apellidoM FROM bomberos")
         for vol in self.cursor.fetchall():
             rGral, nombre, apellidoP, apellidoM = vol
             vols.append(f"{rGral} - {nombre} {apellidoP} {apellidoM}")
-
+        self.connection.close()
         
         return vols
 

@@ -2,6 +2,7 @@ import os
 
 from lib.Models.connection import Conexion
 from PySide6.QtWidgets import QFileDialog, QWidget
+from lib.Models import Filter
 import datetime
 import pandas as pd
 
@@ -47,9 +48,9 @@ class Informe(Conexion):
         self.excelWriter = pd.ExcelWriter(self.saveDirectory)
 
         if DateStart is not None:
-            self.DateStart = self.Filter_Date(DateStart)
+            self.DateStart = Filter.Filter_Date(DateStart)
         if DateEnd is not None:
-            self.DateEnd = self.Filter_Date(DateEnd)
+            self.DateEnd = Filter.Filter_Date(DateEnd)
         if month is not None:
             self.month = meses[month]
         if year is not None:
@@ -124,7 +125,7 @@ class Informe(Conexion):
                 count(CASE WHEN acto LIKE '10-4-%' THEN corr_cia END),
                 count(CASE WHEN acto LIKE '10-3-%' AND NOT acto = '10-3-9' THEN corr_cia END),
                 count(CASE WHEN acto LIKE '10-5-%' OR acto LIKE '10-6-%' THEN corr_cia END),
-                count(CASE WHEN acto = '10-12' THEN corr_cia END),
+                count(CASE WHEN acto = '10-12' OR acto = '0-11' THEN corr_cia END),
                 count(CASE WHEN acto LIKE '10-9-%' OR acto = '10-3-9' THEN corr_cia END),
                 count(CASE WHEN acto = 'SS.OO.' OR acto = 'SS.EE' THEN corr_cia END),
                 count(CASE WHEN acto = 'ACADEMIA' THEN corr_cia END),

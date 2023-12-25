@@ -63,6 +63,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                          } # Diccionario de estados para CHeckBox de UI de Gestión de licencias para lectura
 
     actos : dict = {}
+    vols: dict = {}
     firefighters = []
 
     def __init__(self):
@@ -82,9 +83,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Probar conexión a base de datos
         try:
             self.database = Conexion()
-            dbData = self.database.getActos()
-            for data in dbData:
-                self.actos[data[0]] = Acto(data[0], data[1], data[2], data[3], data[4], data[5], data[6])
+            self.fillActos()
+            self.fillVols()
 
         except Exception as e:
             QtWidgets.QMessageBox.warning(
@@ -185,6 +185,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btnUpdateLic.clicked.connect(self.updateLicencia)
         self.btnClLic.clicked.connect(self.limpiarLicencia)
 
+    def fillVols(self):
+        for vols in self.database.getVols():
+            self.vols[vols[0]] = Voluntario(
+                rGeneral=vols[0],
+                nombre=vols[1],
+                apellidoP=vols[2],
+                apellidoM=vols[3],
+                eMail=vols[4],
+                rCia=vols[7],
+                Sub_Estado=vols[9]
+            )
+            self.vols[vols[0]].set_divRut(vols[5], vols[6])
+    def fillActos(self):
+        self.actos.clear()
+        dbData = self.database.getActos()
+        for data in dbData:
+            self.actos[data[0]] = Acto(data[0], data[1], data[2], data[3], data[4], data[5], data[6])
+
     def get_carros(self):
         self.unidades_asistentes.clear()
         if self.contentField.currentIndex() == 0:
@@ -197,12 +215,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.unidades_asistentes.append(key)
 
     def set_carros(self, carros):
-        carros = carros.split(',')
-        for key, value in self.edicion_carros.items():
-            if key not in carros:
-                value.setCheckState(QtCore.Qt.CheckState.Unchecked)
-            else:
-                value.setCheckState(QtCore.Qt.CheckState.Checked)
+        if type(carros) is not None:
+            carros = carros.split(',')
+            for key, value in self.edicion_carros.items():
+                if key not in carros:
+                    value.setCheckState(QtCore.Qt.CheckState.Unchecked)
+                else:
+                    value.setCheckState(QtCore.Qt.CheckState.Checked)
 
 
     def filter_Act(self, act):
@@ -429,7 +448,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             cCia = self.liListsView.model().index(self.liListsView.currentRow(), 0).data()
             lista = Acto(cCia, self.cb_espAct.currentText(), self.inpCorrGenEdit.text(), self.inpFechaEdit.text(),
                          self.inpDireccionEdit.text(), self.efectiva_estate_in[self.cbEfectivaEdit.checkState().value],
-                         len(self.lista), self.lista, self.unidades_asistentes)
+                         self.unidades_asistentes)
+            lista.set_vols(self.lista)
+            lista.set_qty_vols()
             lista.editLista()
             aviso = QtWidgets.QMessageBox.information(self, "Guardar", "Lista guardada exitosamente")
             self.buscar_listas()
@@ -495,15 +516,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 rowIndex += 1
     def add_vol_to_list(self, input_vol):
         try:
-            reg, nombre, apellido, apellido2 = self.database.addVolLista(input_vol)
             if self.contentField.currentIndex() == 0:
                 rowPosition = self.liVols.rowCount()
                 if input_vol not in self.lista:
                     self.liVols.insertRow(rowPosition)
-                    self.liVols.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(reg))
-                    self.liVols.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(f'{nombre} {apellido} {apellido2}'))
+                    self.liVols.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(self.vols[input_vol].rGeneral))
+                    self.liVols.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(f'{self.vols[input_vol].nombre} {self.vols[input_vol].apellidoP} {self.vols[input_vol].apellidoM}'))
                     self.inpVol.clear()
-                    self.lista.add(reg)
+                    self.lista.add(input_vol)
                     self.lblTotalLista.setText(str(len(self.lista)))
                 else:
                     self.inpVol.clear()
@@ -569,6 +589,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             acto.set_qty_vols()
             acto.addLista()
             aviso = QtWidgets.QMessageBox.information(self, "Guardar", "Lista guardada exitosamente")
+            self.fillActos()
             self.clearFields()
         except Exception as e:
             dialogo = QtWidgets.QMessageBox.warning(
