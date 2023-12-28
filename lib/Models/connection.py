@@ -64,14 +64,14 @@ class Conexion:
         return result
 
 
-    def getYear(self):
-        self.connection.connect()
-        years = [""]
-        self.cursor.execute("SELECT YEAR(fecha) FROM actos GROUP BY year(fecha)")
-        for ye in self.cursor.fetchall():
-            years.append(str(ye[0]))
-        self.connection.close()
-        return years
+    # def getYear(self):
+    #     self.connection.connect()
+    #     years = [""]
+    #     self.cursor.execute("SELECT DISTINCT YEAR(fecha) FROM actos")
+    #     for ye in self.cursor.fetchall():
+    #         years.append(str(ye[0]))
+    #     self.connection.close()
+    #     return years
 
     def getActos(self):
         self.connection.connect()

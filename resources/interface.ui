@@ -31,8 +31,6 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget{
-	background-color: #202124;
-	color: #e8eaed;
 	font-family: &quot;Roboto Medium&quot;;
 }
 
@@ -67,9 +65,6 @@ border-radius: 4px;
 border: 0.5px solid lightgrey;
 }
 
-QTableWidget Header{
-	color: #4a4a4a;
-}
 #SideBar #btnInsertList{
 	text-align: center;
 	border-width: 1px;
@@ -102,6 +97,32 @@ QTableWidget Header{
           </font>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QPushButton" name="btnInsertList">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>Insertar Lista</string>
+            </property>
+            <property name="icon">
+             <iconset resource="Recursos.qrc">
+              <normaloff>:/Icons/Icons/file-plus.svg</normaloff>:/Icons/Icons/file-plus.svg</iconset>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QPushButton" name="btnViewList">
             <property name="sizePolicy">
@@ -139,32 +160,6 @@ QTableWidget Header{
             <property name="icon">
              <iconset resource="Recursos.qrc">
               <normaloff>:/Icons/Icons/file-text.svg</normaloff>:/Icons/Icons/file-text.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnInsertList">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="text">
-             <string>Insertar Lista</string>
-            </property>
-            <property name="icon">
-             <iconset resource="Recursos.qrc">
-              <normaloff>:/Icons/Icons/file-plus.svg</normaloff>:/Icons/Icons/file-plus.svg</iconset>
             </property>
            </widget>
           </item>
@@ -251,7 +246,7 @@ QTableWidget Header{
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="pageInsert">
        <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -628,16 +623,36 @@ QTableWidget Header{
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QWidget" name="viewLl" native="true">
-          <layout class="QVBoxLayout" name="verticalLayout_8">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>Buscar Acto de Servicio</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="inpSearchList"/>
+            <layout class="QHBoxLayout" name="horizontalLayout_18">
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>Buscar Acto de Servicio</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox"/>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox_2"/>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </item>
            <item>
             <widget class="QTableWidget" name="liListsView">

@@ -10,11 +10,12 @@ import sys
 import os.path
 import pdfkit
 import pandas as pd
+import datetime as dt
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     information = {
-        "version": "1.1.2.0",
+        "version": "0.2.0.0",
         "autor": "Andrés Bahamondes Carvajal"
     }
     efectiva_estate_in = {2: "OB", 0: "AB"}
@@ -67,6 +68,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     vols: dict = {}
     firefighters = []
     selectedFirefighter : Voluntario
+    years : list = ["2022", "2023", "2024"]
+    months : dict = {
+        "Enero" : 1,
+        "Febrero" : 2,
+        "Marzo" : 3,
+        "Abril" : 4,
+        "Mayo" : 5,
+        "Junio" : 6,
+        "Julio" : 7,
+        "Agosto" : 8,
+        "Septiembre" : 9,
+        "Octubre" : 10,
+        "Noviembre" : 11,
+        "Diciembre" : 12
+    }
 
     def __init__(self):
         super().__init__()
@@ -133,9 +149,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         headerEditList = self.liVolsEdit.horizontalHeader()
         headerEditList.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         headerEditList.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode.Stretch)
+        self.cb_srcMonth.addItems(self.months.keys())
+        self.cb_srcYear.addItems(self.years)
 
         # Conexión de campo de búsqueda
-        self.inpSearchList.textChanged.connect(self.buscar_listas)
+        self.cb_srcMonth.currentTextChanged.connect(self.buscar_listas)
+        self.cb_srcYear.currentTextChanged.connect(self.buscar_listas)
         # Conexión de selección de la tabla
         self.liListsView.selectionModel().selectionChanged.connect(self.getActo)
         # Configuración para edición de los actos
@@ -201,7 +220,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.vols[vols[0]].set_divRut(vols[5], vols[6])
             self.vols[vols[0]].fIngreso = vols[8]
     def fillActos(self):
-        self.actos.clear()
         dbData = self.database.getActos()
         for data in dbData:
             self.actos[data[0]] = Acto(data[0], data[1], data[2], data[3], data[4], data[5], data[6])
@@ -252,7 +270,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.contentField.setCurrentIndex(2)
         self.database.connection.connect()
         self.cbAnoInforme.clear()
-        self.cbAnoInforme.addItems(self.database.getYear())
+        self.cbAnoInforme.addItems(self.years)
 
     def setFirefighterDataUI(self):
         self.database.connection.close()
@@ -459,9 +477,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             self.get_carros()
             cCia = self.liListsView.model().index(self.liListsView.currentRow(), 0).data()
-            lista = Acto(cCia, self.cb_espAct.currentText(), self.inpCorrGenEdit.text(), self.inpFechaEdit.text(),
-                         self.inpDireccionEdit.text(), self.efectiva_estate_in[self.cbEfectivaEdit.checkState().value],
-                         self.unidades_asistentes)
+            lista = Acto(ccia= cCia,
+                         acto= self.cb_espAct.currentText(), 
+                         cgral= self.inpCorrGenEdit.text(), 
+                         date= self.inpFechaEdit.text(),
+                         address=self.inpDireccionEdit.text(), 
+                         lista=self.efectiva_estate_in[self.cbEfectivaEdit.checkState().value],
+                         carros=self.unidades_asistentes)
             lista.set_vols(self.lista)
             lista.set_qty_vols()
             lista.editLista()
@@ -509,21 +531,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.inpFechaEdit.setDate(self.actos[cCia].date)
             self.cbEfectivaEdit.setCheckState(self.cb_efectiva_edit_estates[self.actos[cCia].lista])
             self.clearTable(self.liVolsEdit)
-            vols = self.database.extVols(cCia)
-            for i in range(len(vols)):
-                rGral, nombre, apellido1, apellido2 = vols[i]
-                self.liVolsEdit.insertRow(i)
-                self.liVolsEdit.setItem(i, 0, QtWidgets.QTableWidgetItem(rGral))
-                self.liVolsEdit.setItem(i, 1, QtWidgets.QTableWidgetItem(f'{nombre} {apellido1} {apellido2}'))
-                self.lista.add(rGral)
-            self.lbl_cVolsEdit.setText(str(len(self.lista)))
+            if len(self.actos[cCia].vols) == 0:
+                vols = self.database.extVols(cCia)
+                for i in range(len(vols)):
+                    rGral, nombre, apellido1, apellido2 = vols[i]
+                    self.liVolsEdit.insertRow(i)
+                    self.liVolsEdit.setItem(i, 0, QtWidgets.QTableWidgetItem(rGral))
+                    self.liVolsEdit.setItem(i, 1, QtWidgets.QTableWidgetItem(f'{nombre} {apellido1} {apellido2}'))
+                    self.lista.add(rGral)
+                self.lbl_cVolsEdit.setText(str(len(self.lista)))
+                self.actos[cCia].set_vols(self.lista)
+                self.actos[cCia].set_qty_vols()
+            else:
+                i = 1
+                for vol in self.actos[cCia].vols:
+                    self.liVolsEdit.insertRow(i)
+                    self.liVolsEdit.setItem(i, 0, QtWidgets.QTableWidgetItem(vol))
+                    self.liVolsEdit.setItem(i, 1, QtWidgets.QTableWidgetItem(f'{self.vols[vol].nombre} {self.vols[vol].apellidoP} {self.vols[vol].apellidoM}'))
+                    self.lista.add(vol)
+                    i += 1
+                self.lbl_cVolsEdit.setText(str(self.actos[cCia].qty_vols))
             self.set_carros(self.actos[cCia].carros)
+
 
     def buscar_listas(self):
         rowIndex = 0
         self.clearTable(self.liListsView)
         for acto in self.actos.values():
-            if (self.inpSearchList.text().upper() in acto.company_cor) or (self.inpSearchList.text().upper() in acto.address):
+            if (acto.date.year == int(self.cb_srcYear.currentText()) and acto.date.month == self.months.get(self.cb_srcMonth.currentText())) :
                 self.liListsView.insertRow(rowIndex)
                 self.liListsView.setItem(rowIndex, 0, QtWidgets.QTableWidgetItem(acto.company_cor))
                 self.liListsView.setItem(rowIndex, 1, QtWidgets.QTableWidgetItem(str(acto.date)))
@@ -589,7 +624,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cbEfectiva.setCheckState(QtCore.Qt.CheckState.Unchecked)
         self.lblTotalLista.setText(str(len(self.lista)))
         self.cbAnoInforme.clear()
-        self.cbAnoInforme.addItems(self.database.getYear())
+        self.cbAnoInforme.addItems(self.years)
         self.unidades_asistentes.clear()
         for value in self.ingreso_carros.values():
             value.setCheckState(QtCore.Qt.CheckState.Unchecked)
@@ -597,15 +632,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def save_list(self):
         try:
             self.get_carros()
-            acto = Acto(self.inpCorrCia.text(), self.cb_actC2.currentText(), self.inpCorrGral.text(),
-                        self.inpFecha.text(),
-                        self.inpDireccion.text(), self.efectiva_estate_in[self.cbEfectiva.checkState().value],
-                        self.unidades_asistentes)
+            acto = Acto(ccia= self.inpCorrCia.text(), 
+                        acto= self.cb_actC2.currentText(), 
+                        cgral= self.inpCorrGral.text(),
+                        date= self.inpFecha.text(),
+                        address= self.inpDireccion.text(), 
+                        lista= self.efectiva_estate_in[self.cbEfectiva.checkState().value],
+                        carros= self.unidades_asistentes)
             acto.set_vols(self.lista)
             acto.set_qty_vols()
             acto.addLista()
             aviso = QtWidgets.QMessageBox.information(self, "Guardar", "Lista guardada exitosamente")
-            self.fillActos()
+            self.actos[self.inpCorrCia.text()] = acto
             self.clearFields()
         except Exception as e:
             dialogo = QtWidgets.QMessageBox.warning(

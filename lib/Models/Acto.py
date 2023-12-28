@@ -9,7 +9,7 @@ class Acto:
     address : str
     lista : str
     qty_vols : int
-    vols : list
+    vols : list = []
     carros : str
 
     def __init__(self, ccia, acto, cgral, date, address, lista, carros):

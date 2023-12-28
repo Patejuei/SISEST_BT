@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfaceanSQZh.ui'
+## Form generated from reading UI file 'interfacepnQxVK.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.1
 ##
@@ -27,46 +27,62 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1080, 768)
-        MainWindow.setMinimumSize(QSize(1080, 768))
+        MainWindow.resize(1080, 638)
+        MainWindow.setMinimumSize(QSize(1080, 0))
         MainWindow.setMaximumSize(QSize(16777215, 16777215))
         icon = QIcon()
         icon.addFile(u":/Logos/CbpaLogo.ico", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
+        MainWindow.setStyleSheet(u"QWidget{\n"
+"	font-family: \"Roboto Medium\";\n"
+"}\n"
+"\n"
+"#SideBar, #actionMenu, #infoMenu{\n"
+"	background-color: #424242;\n"
+"}\n"
+"\n"
+"QPushButton{\n"
+"	cursor: pointer;\n"
+"}")
         MainWindow.setAnimated(True)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.centralwidget.setStyleSheet(u"#SideBar{\n"
-"background-color: #202020;\n"
-"color: #f5f5f5\n"
-"}\n"
-"#SideBar QPushButton{\n"
+        self.centralwidget.setStyleSheet(u"#SideBar QPushButton{\n"
 "background-color: transparent;\n"
 "color: #f5f5f5;\n"
 "border: none;\n"
+"border-radius: 10%;\n"
+"transition: all .5s;\n"
+"text-align: left;\n"
+"padding: 0.5em;\n"
 "}\n"
 "#SideBar QPushButton:hover{\n"
-"background-color: #5E90F2;\n"
-"color: #202020;\n"
+"background-color: #4a4a4a;\n"
+"font-weight: 700;\n"
 "}\n"
-"QLineEdit, QTableEdit, QDateEdit{\n"
+"QLineEdit, QTableWidget, QDateEdit{\n"
 "border-radius: 4px;\n"
 "border: 0.5px solid lightgrey;\n"
 "}\n"
-"")
+"\n"
+"#SideBar #btnInsertList{\n"
+"	text-align: center;\n"
+"	border-width: 1px;\n"
+"	border-style: solid;\n"
+"	border-radius: 2em;\n"
+"	border-color: #8ab4f8;\n"
+"	color: #8ab4f8;\n"
+"}\n"
+"\n"
+"#SideBar #btnInsertList:hover{\n"
+"	background-color: rgba(138,180,248,.1);\n"
+"}")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.SideBar = QWidget(self.centralwidget)
         self.SideBar.setObjectName(u"SideBar")
         self.verticalLayout_3 = QVBoxLayout(self.SideBar)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.opnMenu = QWidget(self.SideBar)
-        self.opnMenu.setObjectName(u"opnMenu")
-        self.verticalLayout_4 = QVBoxLayout(self.opnMenu)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-
-        self.verticalLayout_3.addWidget(self.opnMenu, 0, Qt.AlignTop)
-
         self.actionMenu = QWidget(self.SideBar)
         self.actionMenu.setObjectName(u"actionMenu")
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
@@ -75,7 +91,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.actionMenu.sizePolicy().hasHeightForWidth())
         self.actionMenu.setSizePolicy(sizePolicy)
         font = QFont()
-        font.setFamilies([u"Inter"])
+        font.setFamilies([u"Roboto Medium"])
         font.setBold(True)
         self.actionMenu.setFont(font)
         self.verticalLayout = QVBoxLayout(self.actionMenu)
@@ -87,6 +103,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.btnInsertList.sizePolicy().hasHeightForWidth())
         self.btnInsertList.setSizePolicy(sizePolicy1)
+        self.btnInsertList.setMinimumSize(QSize(0, 0))
         self.btnInsertList.setCursor(QCursor(Qt.PointingHandCursor))
         icon1 = QIcon()
         icon1.addFile(u":/Icons/Icons/file-plus.svg", QSize(), QIcon.Normal, QIcon.Off)
@@ -169,6 +186,10 @@ class Ui_MainWindow(object):
 
         self.contentField = QStackedWidget(self.centralwidget)
         self.contentField.setObjectName(u"contentField")
+        self.contentField.setStyleSheet(u"Qwidget QPushButton{\n"
+"	cursor: pointer;\n"
+"	\n"
+"}")
         self.pageInsert = QWidget()
         self.pageInsert.setObjectName(u"pageInsert")
         self.verticalLayout_10 = QVBoxLayout(self.pageInsert)
@@ -286,6 +307,8 @@ class Ui_MainWindow(object):
         self.liVols.setHorizontalHeaderItem(1, __qtablewidgetitem1)
         self.liVols.setObjectName(u"liVols")
         self.liVols.setMinimumSize(QSize(600, 0))
+        self.liVols.setAutoFillBackground(False)
+        self.liVols.setStyleSheet(u"")
         self.liVols.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.liVols.setSelectionMode(QAbstractItemView.SingleSelection)
         self.liVols.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -378,17 +401,33 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.viewLl = QWidget(self.pageView)
         self.viewLl.setObjectName(u"viewLl")
-        self.verticalLayout_8 = QVBoxLayout(self.viewLl)
-        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_4 = QVBoxLayout(self.viewLl)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.horizontalLayout_18 = QHBoxLayout()
+        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
         self.label_10 = QLabel(self.viewLl)
         self.label_10.setObjectName(u"label_10")
 
-        self.verticalLayout_8.addWidget(self.label_10)
+        self.horizontalLayout_18.addWidget(self.label_10)
 
-        self.inpSearchList = QLineEdit(self.viewLl)
-        self.inpSearchList.setObjectName(u"inpSearchList")
+        self.cb_srcMonth = QComboBox(self.viewLl)
+        self.cb_srcMonth.setObjectName(u"cb_srcMonth")
+        self.cb_srcMonth.setMinimumSize(QSize(124, 0))
 
-        self.verticalLayout_8.addWidget(self.inpSearchList)
+        self.horizontalLayout_18.addWidget(self.cb_srcMonth)
+
+        self.cb_srcYear = QComboBox(self.viewLl)
+        self.cb_srcYear.setObjectName(u"cb_srcYear")
+        self.cb_srcYear.setMinimumSize(QSize(92, 0))
+
+        self.horizontalLayout_18.addWidget(self.cb_srcYear)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_18.addItem(self.horizontalSpacer)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout_18)
 
         self.liListsView = QTableWidget(self.viewLl)
         if (self.liListsView.columnCount() < 4):
@@ -407,7 +446,7 @@ class Ui_MainWindow(object):
         self.liListsView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.liListsView.horizontalHeader().setCascadingSectionResizes(False)
 
-        self.verticalLayout_8.addWidget(self.liListsView)
+        self.verticalLayout_4.addWidget(self.liListsView)
 
 
         self.horizontalLayout_2.addWidget(self.viewLl)
@@ -1049,7 +1088,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.contentField.setCurrentIndex(2)
+        self.contentField.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1109,7 +1148,7 @@ class Ui_MainWindow(object):
         self.btnSave.setText(QCoreApplication.translate("MainWindow", u"Guardar", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Buscar Acto de Servicio", None))
         ___qtablewidgetitem2 = self.liListsView.horizontalHeaderItem(0)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Correlativo de Compa\u00f1\u00eda", None));
+        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Correlativo Cia", None));
         ___qtablewidgetitem3 = self.liListsView.horizontalHeaderItem(1)
         ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Fecha", None));
         ___qtablewidgetitem4 = self.liListsView.horizontalHeaderItem(2)
@@ -1229,7 +1268,7 @@ class Ui_MainWindow(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'Roboto Medium'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Inter'; font-size:12px; font-weight:700;\"><br /></p></body></html>", None))
         self.label_37.setText(QCoreApplication.translate("MainWindow", u"V.B Capit\u00e1n", None))
         self.cbVBCapitan.setText(QCoreApplication.translate("MainWindow", u"Aprobado", None))
