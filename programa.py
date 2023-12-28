@@ -4,6 +4,7 @@ from lib.Models.Acto import Acto
 from lib.Models.Voluntario import Voluntario
 from lib.Models.Informe import Informe
 from lib.Models.Licencias import Licencia
+from lib.Models import Filter
 from PySide6 import QtWidgets, QtCore
 import sys
 import os.path
@@ -65,6 +66,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     actos : dict = {}
     vols: dict = {}
     firefighters = []
+    selectedFirefighter : Voluntario
 
     def __init__(self):
         super().__init__()
@@ -197,6 +199,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 Sub_Estado=vols[9]
             )
             self.vols[vols[0]].set_divRut(vols[5], vols[6])
+            self.vols[vols[0]].fIngreso = vols[8]
     def fillActos(self):
         self.actos.clear()
         dbData = self.database.getActos()
@@ -390,10 +393,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # DONE*
     def insert_vol(self):
         try:
-            nVoluntario = Voluntario(self.fldRegGral.text(), self.fldRegCia.text(), self.fldNombre.text(),
-                                     self.fldApellidoP.text(), self.fldApellidoM.text(), self.fldRut.text(),
-                                     self.fldeMail.text(), self.fldFechaIn.text(), self.cbSubEstado.currentText())
+            nVoluntario = Voluntario(rGeneral=self.fldRegGral.text(), 
+                                     rCia=self.fldRegCia.text(), 
+                                     nombre=self.fldNombre.text(),
+                                     apellidoP=self.fldApellidoP.text(), 
+                                     apellidoM=self.fldApellidoM.text(),
+                                     eMail=self.fldeMail.text(), 
+                                     Sub_Estado=self.cbSubEstado.currentText())
+            nVoluntario.fIngreso = Filter.Filter_Date(self.fldFechaIn.text())
+            nVoluntario.set_fullRut(self.fldRut.text())
             nVoluntario.addVols()
+            self.vols[self.fldRegGral.text()] = nVoluntario
             self.buscar_bomberos()
         except Exception as e:
             dialogo = QtWidgets.QMessageBox.warning(
@@ -403,12 +413,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def editar_vol(self):
         try:
-            _EditedFirefighter = Voluntario(self.fldRegGral.text(), self.fldRegCia.text(), self.fldNombre.text(),
-                                            self.fldApellidoP.text(), self.fldApellidoM.text(), self.fldRut.text(),
-                                            self.fldeMail.text(), self.fldFechaIn.text(),
-                                            self.cbSubEstado.currentText())
+            _EditedFirefighter = Voluntario(rGeneral=self.fldRegGral.text(), 
+                                            rCia=self.fldRegCia.text(), 
+                                            nombre=self.fldNombre.text(),
+                                            apellidoP=self.fldApellidoP.text(), 
+                                            apellidoM=self.fldApellidoM.text(),
+                                            eMail=self.fldeMail.text(),
+                                            Sub_Estado=self.cbSubEstado.currentText())
+            _EditedFirefighter.fIngreso = Filter.Filter_Date(self.fldFechaIn.text())
+            _EditedFirefighter.set_fullRut(self.fldRut.text())
             _EditedFirefighter.editVol()
-            self.buscar_bomberos()
+            self.vols[self.fldRegGral.text()] = _EditedFirefighter
             aviso = QtWidgets.QMessageBox.information(self, "Guardar", "Información actualizada exitosamente")
         except Exception as e:
             dialogo = QtWidgets.QMessageBox.warning(
@@ -420,28 +435,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if seleccion.indexes():
             fila = seleccion.indexes()[0].row()
             cCia = self.tblAdminVols.model().index(fila, 0).data()
-            rGral, nombre, apellido1, apellido2, email, rut, dv, rCia, fIngreso, sub_estado = self.database.getVols(
-                cCia)
-            self.fldRegGral.setText(rGral)
-            self.fldRegCia.setText(str(rCia))
-            self.fldNombre.setText(nombre)
-            self.fldApellidoP.setText(apellido1)
-            self.fldApellidoM.setText(apellido2)
-            self.fldRut.setText(f'{rut}-{dv}')
-            self.fldeMail.setText(email)
-            self.fldFechaIn.setDate(fIngreso)
-            self.cbSubEstado.setCurrentText(sub_estado)
+            bombero = self.vols[cCia]
+            self.fldRegGral.setText(bombero.rGeneral)
+            self.fldRegCia.setText(str(bombero.rCia))
+            self.fldNombre.setText(bombero.nombre)
+            self.fldApellidoP.setText(bombero.apellidoP)
+            self.fldApellidoM.setText(bombero.apellidoM)
+            self.fldRut.setText(f'{bombero.rut}-{bombero.dv}')
+            self.fldeMail.setText(bombero.eMail)
+            self.fldFechaIn.setDate(bombero.fIngreso)
+            self.cbSubEstado.setCurrentText(bombero.Sub_Estado)
+            self.selectedFirefighter = bombero
 
     def buscar_bomberos(self):
-        self.database.connection.connect()
         self.clearTable(self.tblAdminVols)
-        vols = self.database.srcVols(self.fldSrcAdminVols.text())
-        for i in range(len(vols)):
-            rGral, nombre, apellido1, apellido2 = vols[i]
+        i = 0
+        for bombero in self.vols.values():
             self.tblAdminVols.insertRow(i)
-            self.tblAdminVols.setItem(i, 0, QtWidgets.QTableWidgetItem(rGral))
-            self.tblAdminVols.setItem(i, 1, QtWidgets.QTableWidgetItem(f'{nombre} {apellido1} {apellido2}'))
-
+            self.tblAdminVols.setItem(i, 0, QtWidgets.QTableWidgetItem(bombero.rGeneral))
+            self.tblAdminVols.setItem(i, 1, QtWidgets.QTableWidgetItem(f'{bombero.nombre} {bombero.apellidoP} {bombero.apellidoM}'))
+            i += 1
     def edit_list(self):
         try:
             self.get_carros()
@@ -452,6 +465,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             lista.set_vols(self.lista)
             lista.set_qty_vols()
             lista.editLista()
+            self.actos[cCia] = lista
             aviso = QtWidgets.QMessageBox.information(self, "Guardar", "Lista guardada exitosamente")
             self.buscar_listas()
         except Exception as e:
@@ -467,10 +481,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         if alerta == QtWidgets.QMessageBox.Apply:
             try:
-                self.database.delLista(self.liListsView.model().index(self.liListsView.currentRow(), 0).data())
+                cCia = self.liListsView.model().index(self.liListsView.currentRow(), 0).data()
+                self.database.delLista(cCia)
                 dialogo = QtWidgets.QMessageBox.information(
                     self, "Cambios aplicados", "Lista eliminada con exito"
                 )
+                self.actos.pop(cCia)
                 self.buscar_listas()
             except Exception as e:
                 dialogo = QtWidgets.QMessageBox.warning(
@@ -532,11 +548,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 rowPosition = self.liVolsEdit.rowCount()
                 if input_vol not in self.lista:
                     self.liVolsEdit.insertRow(rowPosition)
-                    self.liVolsEdit.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(reg))
+                    self.liVolsEdit.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(self.vols[input_vol].rGeneral))
                     self.liVolsEdit.setItem(rowPosition, 1,
-                                            QtWidgets.QTableWidgetItem(f'{nombre} {apellido} {apellido2}'))
+                                            QtWidgets.QTableWidgetItem(f'{self.vols[input_vol].nombre} {self.vols[input_vol].apellidoP} {self.vols[input_vol].apellidoM}'))
                     self.inpAddVolEdit.clear()
-                    self.lista.add(reg)
+                    self.lista.add(input_vol)
                     self.lbl_cVolsEdit.setText(str(len(self.lista)))
                 else:
                     self.inpAddVolEdit.clear()
