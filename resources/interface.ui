@@ -18,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>1080</width>
+    <width>16777215</width>
     <height>16777215</height>
    </size>
   </property>
@@ -634,10 +634,24 @@ border: 0.5px solid lightgrey;
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox"/>
+              <widget class="QComboBox" name="cb_srcMonth">
+               <property name="minimumSize">
+                <size>
+                 <width>124</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox_2"/>
+              <widget class="QComboBox" name="cb_srcYear">
+               <property name="minimumSize">
+                <size>
+                 <width>92</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer">
@@ -670,7 +684,7 @@ border: 0.5px solid lightgrey;
              </attribute>
              <column>
               <property name="text">
-               <string>Correlativo de Compañía</string>
+               <string>Correlativo Cia</string>
               </property>
              </column>
              <column>

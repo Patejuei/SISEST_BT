@@ -643,7 +643,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             acto.set_qty_vols()
             acto.addLista()
             aviso = QtWidgets.QMessageBox.information(self, "Guardar", "Lista guardada exitosamente")
-            self.actos[self.inpCorrCia.text()] = acto
+            self.actos[acto.company_cor] = acto
             self.clearFields()
         except Exception as e:
             dialogo = QtWidgets.QMessageBox.warning(

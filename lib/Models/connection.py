@@ -75,7 +75,7 @@ class Conexion:
 
     def getActos(self):
         self.connection.connect()
-        self.cursor.execute('SELECT corr_cia, acto, corr_gral, fecha, direccion, lista, unidad FROM actos ORDER BY fecha DESC, corr_cia DESC')
+        self.cursor.execute('SELECT corr_cia, acto, corr_gral, fecha, direccion, lista, unidad FROM actos ORDER BY fecha, corr_cia')
         result = self.cursor.fetchall()
         self.connection.close()
         return result
